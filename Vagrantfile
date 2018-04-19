@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "forwarded_port", guest: 8080, host: 8080, id: 'http'
 
-  config.vm.synced_folder ".", "/home/vagrant/go/src/github.com/VG-Tech-Dojo/vg-1day-2018"
+  config.vm.synced_folder ".", "/home/vagrant/go/src/github.com/VG-Tech-Dojo/vg-1day-2018-04-22"
 
   config.vm.provision "shell", inline: <<-SHELL
     add-apt-repository ppa:gophers/archive
