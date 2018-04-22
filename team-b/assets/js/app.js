@@ -63,26 +63,9 @@
         {key: 'talk', options: []},
         {key: 'gacha', options: []},
         {key: 'omikuji', options: []}
-      ]
-    },
-    computed: {
-      suggests () {
-        if (this.messages.body.length === 0) return [];
-        const input = document.querySelector('html > body > div > footer > input')
-        const selectionStart = input.selectionStart
-        const selectionEnd = input.selectionEnd
-        if (selectionStart !== selectionEnd || selectionStart > 0) return [];
-        const ret = []
-        const inputText = this.messages.body
-        this.bots.forEach(bot => {
-          if (bot.key.substr(0, inputText.length) === inputText) ret.push(bot.key)
-          bot.options.forEach(option => {
-            const s = bot.key + option
-            if (s.substr(0, inputText.length) === inputText) ret.push(s)
-          })
-        })
-        return ret.slice(0, 5)
-      }
+      ],
+      index: 0,
+      key: ''
     },
     created() {
       this.getMessages();
@@ -104,6 +87,23 @@
       keydown(e) {
         if (e.keyCode === 13 && (e.altKey || e.shiftKey || e.ctrlKey)) {
           this.sendMessage()
+        }
+        if (e.keyCode === 9) {
+          e.preventDefault();
+          if (this.index === 0) {
+            this.key = this.newMessage.body;
+            if (this.bots.filter(bot => bot.key.substr(0, this.key.length) === this.key).length > 0) {
+              this.index = 1;
+              const username = this.newMessage.username;
+              this.newMessage = {
+                body: this.bots.filter(bot => bot.key.substr(0, this.key.length) === this.key)[0].key,
+                username
+              }
+            }
+          } else {
+          }
+        } else {
+          this.index = 0;
         }
       },
       sendMessage() {
