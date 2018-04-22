@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/model"
 )
 
 type (
@@ -99,4 +99,35 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 		checker:   checker,
 		processor: processor,
 	}
+}
+// NewGachaBot m2-1でつくるやつです
+func NewGachaBot(out chan *model.Message) *Bot {
+		in := make(chan *model.Message)
+		checker := NewRegexpChecker("\\Agacha\\z")
+		processor := &GachaProcessor{}
+
+			return &Bot{
+				name:      "gachabot",
+				in:        in,
+				out:       out,
+				checker:   checker,
+				processor: processor,
+								}
+
+		}
+
+func KatoBot(out chan *model.Message) *Bot {
+
+	in := make(chan *model.Message)
+	checker := NewRegexpChecker("\\Akato\\z")
+
+	processor := &KatoProcessor{}
+	return &Bot{
+		name:      "katobot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+
 }
