@@ -14,7 +14,6 @@
         editedBody: null,
       }
     },
-    // 1-1. ユーザー名を表示しよう
     template: `
     <div class="message">
       <div v-if="editing">
