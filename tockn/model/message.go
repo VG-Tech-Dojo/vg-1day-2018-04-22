@@ -91,7 +91,11 @@ func (m *Message) Delete(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	return nil
+	return &Message{
+		ID:       m.ID,
+		Body:     m.Body,
+		Username: m.Username,
+	}, nil
 }
 
 // ...
