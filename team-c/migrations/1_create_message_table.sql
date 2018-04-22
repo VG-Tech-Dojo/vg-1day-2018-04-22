@@ -11,6 +11,19 @@ CREATE TABLE image (
     id INTEGER NOT NULL PRIMARY KEY,
     path TEXT NOT NULL
 );
+
+INSERT INTO image(path) VALUES
+    ('image01.png'),
+    ('image02.png'),
+    ('image03.png'),
+    ('image04.png'),
+    ('image05.png'),
+    ('image06.png'),
+    ('image07.png'),
+    ('image08.png'),
+    ('image09.png'),
+    ('image10.png');
+
 -- +migrate Down
 DROP TABLE message;
 
