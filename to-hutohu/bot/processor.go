@@ -1,14 +1,16 @@
 package bot
 
 import (
+	"math/rand"
 	"regexp"
 	"strings"
 
 	"fmt"
 
+	"net/url"
+
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/model"
-	"net/url"
 )
 
 const (
@@ -29,6 +31,9 @@ type (
 
 	// KeywordProcessor はメッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	// GachaProcessor はガチャの結果を返すprocessorの構造体です
+	GachaProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -76,5 +81,14 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error)
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}, nil
+}
+
+// GachaProcessor はガチャの結果を返します
+func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	result := []string{"SSレア", "Sレア", "レア", "ノーマル"}[rand.Intn(4)]
+	return &model.Message{
+		Username: "Gacha bot",
+		Body:     fmt.Sprintf("ガチャの結果は%sです！！", result),
 	}, nil
 }
