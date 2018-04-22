@@ -1,14 +1,17 @@
 package bot
 
 import (
+	"math/rand"
 	"regexp"
 	"strings"
+	"time"
 
 	"fmt"
 
+	"net/url"
+
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/nozo/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/nozo/model"
-	"net/url"
 )
 
 const (
@@ -29,7 +32,19 @@ type (
 
 	// KeywordProcessor はメッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	GachaProcesser struct{}
 )
+
+func (p *GachaProcesser) Process(msgIn *model.Message) (*model.Message, error) {
+	gacha := []string{
+		"SSレア", "Sレア", "レア", "ノーマル",
+	}
+	rand.Seed(time.Now().UnixNano())
+	return &model.Message{
+		Body: gacha[randIntn(len(gacha))],
+	}, nil
+}
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) (*model.Message, error) {
