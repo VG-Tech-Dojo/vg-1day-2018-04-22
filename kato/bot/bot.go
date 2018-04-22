@@ -113,4 +113,21 @@ func NewGachaBot(out chan *model.Message) *Bot {
 				checker:   checker,
 				processor: processor,
 								}
+
+		}
+
+func KatoBot(out chan *model.Message) *Bot {
+
+	in := make(chan *model.Message)
+	checker := NewRegexpChecker("\\Akato\\z")
+
+	processor := &KatoProcessor{}
+	return &Bot{
+		name:      "katobot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
 	}
+
+}
