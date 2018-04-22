@@ -94,7 +94,6 @@ func (m *Message) Create(c *gin.Context) {
 
 // UpdateByID は...
 func (m *Message) UpdateByID(c *gin.Context) {
-	// 1-3. メッセージを編集しよう
 	var msg model.Message
 
 	if c.Request.ContentLength == 0 {
@@ -108,7 +107,7 @@ func (m *Message) UpdateByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
-	_, err := msg.Update(m.DB)
+	err := msg.Update(m.DB)
 	switch {
 	case err == sql.ErrNoRows:
 		resp := httputil.NewErrorResponse(err)
