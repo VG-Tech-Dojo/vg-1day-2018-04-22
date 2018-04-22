@@ -7,16 +7,17 @@ import (
 
 // Message はメッセージの構造体です
 type Message struct {
-	ID       int64  `json:"id"`
-	Body     string `json:"body"`
-	UserName string `json:"username"` // 1-1. ユーザー名を表示しよう
+	ID               int64  `json:"id"`
+	Body             string `json:"body"`
+	UserName         string `json:"username"` // 1-1. ユーザー名を表示しよう
+	UpdatedTimestamp string `json:"update_timestamp"`
 }
 
 // MessagesAll は全てのメッセージを返します
 func MessagesAll(db *sql.DB) ([]*Message, error) {
 
 	// 1-1. ユーザー名を表示しよう
-	rows, err := db.Query(`select id, body, username from message`)
+	rows, err := db.Query(`select id, body, username, updated from message`)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +27,7 @@ func MessagesAll(db *sql.DB) ([]*Message, error) {
 	for rows.Next() {
 		m := &Message{}
 		// 1-1. ユーザー名を表示しよう
-		if err := rows.Scan(&m.ID, &m.Body, &m.UserName); err != nil {
+		if err := rows.Scan(&m.ID, &m.Body, &m.UserName, &m.UpdatedTimestamp); err != nil {
 			return nil, err
 		}
 		ms = append(ms, m)
@@ -43,7 +44,7 @@ func MessageByID(db *sql.DB, id string) (*Message, error) {
 	m := &Message{}
 
 	// 1-1. ユーザー名を表示しよう
-	if err := db.QueryRow(`select id, body, username from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.UserName); err != nil {
+	if err := db.QueryRow(`select id, body, username, updated from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.UserName, &m.UpdatedTimestamp); err != nil {
 		return nil, err
 	}
 
