@@ -78,7 +78,8 @@ func (m *Message) Update(db *sql.DB) (*Message, error) {
 		return nil, err
 	}
 
-	msg, err := MessageByID(db, strconv.FormatInt(m.ID, 10))
+	ID := strconv.FormatInt(m.ID, 10)
+	msg, err := MessageByID(db, ID)
 	if err != nil {
 		return nil, err
 	}
