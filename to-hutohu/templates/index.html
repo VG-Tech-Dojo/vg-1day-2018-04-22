@@ -3,11 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>vg-1day-2018</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/skeleton.css" />
   <link rel="stylesheet" href="/assets/css/app.css" />
+
 </head>
 <body>
-  <div id="app" class="container">
+  <div id="app" class="container" @dragover.stop.prevent="dragover" @drop.stop.prevent="dropFile">
+    <div v-if="username===''" class="overray"> 
+      ユーザー名を入力してください
+      <input type="text" v-model="tmpUsername" @keyup.enter="username=tmpUsername; newMessage.username=username">
+    </div>
     <div class="row">
       <h5>メッセージアプリ</h5>
     </div>
@@ -26,11 +32,13 @@
       <textarea class="u-full-width" v-model="newMessage.body" placeholder="メッセージ"></textarea>
       <input type="text" class="u-full-width" v-model="newMessage.username" placeholder="ユーザー名">
       <button class="button-primary" v-on:click="sendMessage">Send</button>
+      <button class="button-primary" v-on:click="sendMessage">Send</button>
     </div>
   </div>
 
   <script src="/assets/js/vue.js"></script>
   <script src="/assets/js/whatwg-fetch.js"></script>
   <script src="/assets/js/app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 </body>
 </html>

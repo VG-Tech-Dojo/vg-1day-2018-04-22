@@ -1,8 +1,8 @@
 (function() {
   'use strict';
-  const Message = function() {
+  const Message = function(username) {
     this.body = ''
-    this.username = ''
+    this.username = username
   };
 
   Vue.component('message', {
@@ -53,11 +53,14 @@
   const app = new Vue({
     el: '#app',
     data: {
+      username: '',
+      tmpUsername: '',
       messages: [],
       newMessage: new Message()
     },
     created() {
       this.getMessages();
+      this.newMessage.username = this.username
       setInterval(this.getMessages, 500)
     },
     methods: {
@@ -118,7 +121,19 @@
         })
       },
       clearMessage() {
-        this.newMessage = new Message();
+        this.newMessage = new Message(this.username);
+      },
+      dragover (event) {
+        console.log(event)
+      },
+      dropFile (event) {
+        if (event.dataTransfer.files.length > 0) {
+          const file = event.dataTransfer.files[0]
+          const form = new FormData()
+          form.enctype = 'multipart/form-data'
+          form.append('file', file)
+          axios.post('/image', form)
+        }
       }
     }
   });
