@@ -14,6 +14,7 @@ import (
 
 const (
 	keywordAPIURLFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	talkAPIURLFormat    = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk?status=%s&message=%s&results=json"
 )
 
 type (
@@ -28,10 +29,14 @@ type (
 	// OmikujiProcessor は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかをランダムで作るprocessorの構造体です
 	OmikujiProcessor struct{}
 
-	GachaProcessor struct{}
-
 	// KeywordProcessor はメッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	// 2-1
+	GachaProcessor struct{}
+
+	// 2-2
+	TalkProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -50,19 +55,6 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) (*model.Message, error)
 		"小吉",
 		"末吉",
 		"凶",
-	}
-	result := fortunes[randIntn(len(fortunes))]
-	return &model.Message{
-		Body: result,
-	}, nil
-}
-
-func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
-	fortunes := []string{
-		"SSレア",
-		"Sレア",
-		"レア",
-		"ノーマル",
 	}
 	result := fortunes[randIntn(len(fortunes))]
 	return &model.Message{
@@ -92,5 +84,44 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error)
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}, nil
+}
+
+// 2-1
+func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	fortunes := []string{
+		"SSレア",
+		"Sレア",
+		"レア",
+		"ノーマル",
+	}
+	result := fortunes[randIntn(len(fortunes))]
+	return &model.Message{
+		Body: result,
+	}, nil
+}
+
+// Process はメッセージ本文からキーワードを抽出します
+func (p *TalkProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	url := fmt.Sprintf(talkAPIURLFormat, env.TalkAPIAppID, url.QueryEscape(text))
+
+	type talkAPIResponse map[string]interface{}
+	var json talkAPIResponse
+	get(url, &json)
+
+	talks := []string{}
+	for k, v := range json {
+		if k == "Error" {
+			return nil, fmt.Errorf("%#v", v)
+		}
+		talks = append(talks, k)
+	}
+
+	return &model.Message{
+		Body: "キーワード：" + strings.Join(talks, ", "),
 	}, nil
 }
