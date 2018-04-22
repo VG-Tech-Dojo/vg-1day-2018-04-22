@@ -1,0 +1,7 @@
+vendor/
+server
+tmp/
+
+.idea
+dev.db
+test.db
