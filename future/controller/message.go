@@ -3,6 +3,7 @@ package controller
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/future/httputil"
@@ -75,7 +76,10 @@ func (m *Message) Create(c *gin.Context) {
 
 	// 1-2. ユーザー名を追加しよう
 	// できる人は、ユーザー名が空だったら`anonymous`等適当なユーザー名で投稿するようにしてみよう
-
+	fmt.Printf("%v\n", m)
+	if msg.Username == "" {
+		msg.Username = "hoge"
+	}
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {
 		resp := httputil.NewErrorResponse(err)

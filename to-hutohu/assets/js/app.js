@@ -6,7 +6,6 @@
   };
 
   Vue.component('message', {
-    // 1-1. ユーザー名を表示しよう
     props: ['id', 'body', 'username', 'removeMessage', 'updateMessage'],
     data() {
       return {
@@ -14,7 +13,6 @@
         editedBody: null,
       }
     },
-    // 1-1. ユーザー名を表示しよう
     template: `
     <div class="message">
       <div v-if="editing">
@@ -44,7 +42,7 @@
         this.editedBody = null
       },
       doneEdit() {
-        this.updateMessage({id: this.id, body: this.editedBody})
+        this.updateMessage({id: this.id, username:this.username, body: this.editedBody})
           .then(response => {
             this.cancelEdit()
           })

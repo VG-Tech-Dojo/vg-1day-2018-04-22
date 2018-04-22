@@ -14,7 +14,6 @@
         editedBody: null,
       }
     },
-    // 1-1. ユーザー名を表示しよう
     template: `
     <div class="message">
       <div v-if="editing">
@@ -44,7 +43,7 @@
         this.editedBody = null
       },
       doneEdit() {
-        this.updateMessage({id: this.id, body: this.editedBody})
+        this.updateMessage({id: this.id, body: this.editedBody, username: this.username})
           .then(response => {
             this.cancelEdit()
           })
