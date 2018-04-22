@@ -6,13 +6,14 @@ import (
 
 	"fmt"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-c/env"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-c/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/env"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/model"
 	"net/url"
 )
 
 const (
 	keywordAPIURLFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	talkAPIURL          = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk"
 )
 
 type (
@@ -29,12 +30,19 @@ type (
 
 	// KeywordProcessor はメッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	// GachaProcessor m2-1で追加するやつ
+	GachaProcessor struct{}
+
+	// TalkProcessor m2-2で追加するやつ
+	TalkProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	return &model.Message{
 		Body: msgIn.Body + ", world!",
+		UserName: "bot",
 	}, nil
 }
 
@@ -51,6 +59,7 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) (*model.Message, error)
 	result := fortunes[randIntn(len(fortunes))]
 	return &model.Message{
 		Body: result,
+		UserName: "bot",
 	}, nil
 }
 
@@ -76,5 +85,54 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error)
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+		UserName: "bot",
+	}, nil
+}
+
+// Process ...
+func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	fortunes := []string{
+		"SSレア",
+		"Sレア",
+		"レア",
+		"ノーマル",
+	}
+	result := fortunes[randIntn(len(fortunes))]
+
+	return &model.Message{
+		Body: result,
+		UserName: "bot",
+	}, nil
+}
+
+// Process ...
+func (p *TalkProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	res := &struct {
+		Status  int64  `json:status`
+		Message string `json:message`
+		Results []struct {
+			Perplexity float64 `json:perplexity`
+			Reply      string  `json:reply`
+		} `json:results`
+	}{}
+
+	params := url.Values{}
+	params.Set("apikey", env.TalkAPIKey)
+	params.Add("query", text)
+
+	post(talkAPIURL, params, res)
+
+	// see. https://a3rt.recruit-tech.co.jp/product/talkAPI/
+	if res.Status != 0 {
+		return nil, fmt.Errorf("%#v", res)
+	}
+
+	return &model.Message{
+		Body: res.Results[0].Reply,
+		UserName: "bot",
 	}, nil
 }
