@@ -4,6 +4,7 @@
     this.body = ''
     this.username = ''
     this.update_timestamp = ''
+    this.imageID = ''
   };
 
   Vue.component('message', {
@@ -57,7 +58,7 @@
     el: '#app',
     data: {
       messages: [],
-      newMessage: new Message()
+      newMessage: new Message(),
     },
     created() {
       this.getMessages();

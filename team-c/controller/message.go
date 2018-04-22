@@ -73,7 +73,6 @@ func (m *Message) Create(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
-
 	// 1-2. ユーザー名を追加しよう
 	// できる人は、ユーザー名が空だったら`anonymous`等適当なユーザー名で投稿するようにしてみよう
 	if msg.Body == "" || msg.UserName == "" {
