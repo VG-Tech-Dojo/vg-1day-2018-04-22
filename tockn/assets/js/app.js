@@ -90,7 +90,7 @@
       },
       removeMessage(id) {
         return fetch(`/api/messages/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         })
         .then(response => response.json())
         .then(response => {
