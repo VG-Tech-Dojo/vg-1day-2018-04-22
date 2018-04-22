@@ -25,8 +25,20 @@
       </div>
     </div>
     <div class="row">
+        <select class="u-full-width" v-model="newMessage.imageID">
+            <option disabled value="">Please select one</option>
+            <option value="image1">1</option>
+            <option value="image2">2</option>
+            <option value="image3">3</option>
+            <option value="image4">4</option>
+            <option value="image5">5</option>
+            <option value="image6">6</option>
+            <option value="image7">7</option>
+            <option value="image8">8</option>
+            <option value="image9">9</option>
+            <option value="image10">10</option>
+        </select>
       <textarea class="u-full-width" v-model="newMessage.body" placeholder="メッセージ"></textarea>
-      <!-- 1-2. ユーザー名を追加しよう -->
       <input type="text" class="u-full-width" v-model="newMessage.username" placeholder="ユーザー名">
       <button class="button-primary" v-on:click="sendMessage">Send</button>
     </div>
