@@ -2,6 +2,7 @@ package bot
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"math/rand"
 	"regexp"
@@ -40,16 +41,6 @@ type (
 
 	// TalkProcessor はなんか話してくれるprocerrorの構造体です
 	TalkProcessor struct{}
-
-	talkResponse struct {
-		Reply string `json:"reply"`
-	}
-
-	talkAPIresult struct {
-		Status  int            `json:"status"`
-		Message string         `json:"message"`
-		Results []talkResponse `json:"results"`
-	}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -111,6 +102,7 @@ func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 
 // Process は会話の返答を返します
 func (p *TalkProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+
 	r := regexp.MustCompile("\\Atalk (.*)\\z")
 	matchedStrings := r.FindStringSubmatch(msgIn.Body)
 	text := matchedStrings[1]
@@ -122,16 +114,27 @@ func (p *TalkProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	respBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-	resultData := &talkAPIresult{}
+
+	resultData := &struct {
+		Status  int    `json:"status"`
+		Message string `json:"message"`
+		Results []struct {
+			Reply string `json:"reply"`
+		} `json:"results"`
+	}{}
 	err = json.Unmarshal(respBody, resultData)
 	if err != nil {
-		fmt.Println("siiiiii")
 		return nil, err
+	}
+
+	if resultData.Status != 0 {
+		return nil, errors.New(resultData.Message)
 	}
 
 	reply := ""
