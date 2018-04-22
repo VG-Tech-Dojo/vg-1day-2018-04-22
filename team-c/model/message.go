@@ -10,6 +10,7 @@ type Message struct {
 	ID       int64  `json:"id"`
 	Body     string `json:"body"`
 	UserName string `json:"username"` // 1-1. ユーザー名を表示しよう
+	ImageID  string `json:"imageID"`
 }
 
 // MessagesAll は全てのメッセージを返します
@@ -53,7 +54,7 @@ func MessageByID(db *sql.DB, id string) (*Message, error) {
 // Insert はmessageテーブルに新規データを1件追加します
 func (m *Message) Insert(db *sql.DB) (*Message, error) {
 	// 1-2. ユーザー名を追加しよう
-	res, err := db.Exec(`insert into message (body, username) values (?, ?)`, m.Body, m.UserName)
+	res, err := db.Exec(`insert into message (body, username, image_id) values (?, ?, ?)`, m.Body, m.UserName, m.ImageID)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +66,8 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 	return &Message{
 		ID:       id,
 		Body:     m.Body,
-		UserName: m.UserName, // 1-2. ユーザー名を追加しよう
+		UserName: m.UserName, // 1-2. ユーザー名を追加しよ
+		ImageID:  m.ImageID,
 	}, nil
 }
 
