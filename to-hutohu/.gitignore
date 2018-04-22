@@ -1,6 +1,7 @@
 vendor/
 server
 tmp/
+assets/imgs
 
 .idea
 dev.db

@@ -132,7 +132,7 @@
           const form = new FormData()
           form.enctype = 'multipart/form-data'
           form.append('file', file)
-          axios.post('/image', form)
+          axios.post('/api/image', form)
         }
       }
     }
