@@ -56,16 +56,52 @@
     el: '#app',
     data: {
       messages: [],
-      newMessage: new Message()
+      newMessage: new Message(),
+      bots: [
+        {key: 'mb', options: [' status', ' reset', ' 1 1', ' 1 2', ' 1 3', ' 2 1', ' 2 2', ' 2 3', ' 3 1', ' 3 2', ' 3 3']},
+        {key: 'talk', options: []},
+        {key: 'gacha', options: []},
+        {key: 'omikuji', options: []}
+      ]
+    },
+    computed: {
+      suggests () {
+        if (this.messages.body.length === 0) return [];
+        const input = document.querySelector('html > body > div > footer > input')
+        const selectionStart = input.selectionStart
+        const selectionEnd = input.selectionEnd
+        if (selectionStart !== selectionEnd || selectionStart > 0) return [];
+        const ret = []
+        const inputText = this.messages.body
+        this.bots.forEach(bot => {
+          if (bot.key.substr(0, inputText.length) === inputText) ret.push(bot.key)
+          bot.options.forEach(option => {
+            const s = bot.key + option
+            if (s.substr(0, inputText.length) === inputText) ret.push(s)
+          })
+        })
+        return ret.slice(0, 5)
+      }
     },
     created() {
       this.getMessages();
+      setInterval(() => {
+        axios.get('/api/messages')
+        .then(res => {
+          this.messages = res.data.result
+        })
+      }, 1000)
     },
     methods: {
       getMessages() {
         fetch('/api/messages').then(response => response.json()).then(data => {
           this.messages = data.result;
         });
+      },
+      keydown(e) {
+        if (e.keyCode === 13 && (e.altKey || e.shiftKey || e.ctrlKey)) {
+          this.sendMessage()
+        }
       },
       sendMessage() {
         const message = this.newMessage;
@@ -119,8 +155,11 @@
         })
       },
       clearMessage() {
-        this.newMessage = new Message();
+        this.newMessage.body = '';
       }
+    },
+    mounted() {
+      console.log(document.querySelector('html > body'))
     }
   });
 })();

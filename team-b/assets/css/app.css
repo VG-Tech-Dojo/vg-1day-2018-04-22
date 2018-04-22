@@ -12,3 +12,18 @@
 .message-body .action-button:hover {
   color: #444444;
 }
+
+.input-container {
+  position: fixed;
+  bottom: 0;
+  height: 200px;
+  width: 70%;
+}
+
+.message-list-footer {
+  height: 200px;
+}
+
+body {
+  margin: 0px
+}

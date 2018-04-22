@@ -11,7 +11,7 @@
     <div class="row">
       <h5>メッセージアプリ</h5>
     </div>
-    <div class="row">
+    <div class="row message-container">
       <!-- 1-1. ユーザー名を表示しよう -->
       <div class="message-list" v-for="message in messages">
         <message
@@ -22,18 +22,18 @@
           :update-message="updateMessage"
         ></message>
       </div>
+      <div class="message-list-footer"></div>
     </div>
-    <div class="row">
-      <textarea class="u-full-width" v-model="newMessage.body" placeholder="メッセージ"></textarea>
-      <!-- 1-2. ユーザー名を追加しよう
+    <footer class="row input-container">
+      <textarea class="u-full-width" v-model="newMessage.body" placeholder="メッセージ" v-on:keydown="keydown"></textarea>
       <input type="text" class="u-full-width" v-model="newMessage.username" placeholder="ユーザー名">
-      -->
       <button class="button-primary" v-on:click="sendMessage">Send</button>
-    </div>
+    </footer>
   </div>
 
   <script src="/assets/js/vue.js"></script>
   <script src="/assets/js/whatwg-fetch.js"></script>
   <script src="/assets/js/app.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </body>
 </html>
