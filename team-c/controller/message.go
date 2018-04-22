@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/httputil"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-c/httputil"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-c/model"
 	"github.com/gin-gonic/gin"
 )
 

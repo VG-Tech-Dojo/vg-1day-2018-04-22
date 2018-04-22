@@ -100,3 +100,20 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 		processor: processor,
 	}
 }
+
+// NewKeywordBot はメッセージ本文からキーワードを抽出して返す新しいBotの構造体のポインタを返します
+func ChatBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\.*")
+
+	processor := &KeywordProcessor{}
+
+	return &Bot{
+		name:      "keywordbot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}

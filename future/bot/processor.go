@@ -54,6 +54,8 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) (*model.Message, error)
 	}, nil
 }
 
+
+
 // Process はメッセージ本文からキーワードを抽出します
 func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	r := regexp.MustCompile("\\Akeyword (.*)\\z")
