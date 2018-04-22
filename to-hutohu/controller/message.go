@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/httputil"
@@ -142,17 +144,31 @@ func (m *Message) DeleteByID(c *gin.Context) {
 }
 
 func (m *Message) SaveImage(c *gin.Context) {
-	file, err := c.FormFile("file")
+	uploadedFile, err := c.FormFile("file")
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 		return
 	}
 
-	filename := "./assets/imgs/" + file.Filename
-	if err := c.SaveUploadedFile(file, filename); err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+	file, err := os.Create(`./assets/imgs/` + uploadedFile.Filename)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	defer file.Close()
+
+	tmp, err := uploadedFile.Open()
+	if err != nil {
+		c.Error(err)
 		return
 	}
 
-	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully.", file.Filename))
+	data, err := ioutil.ReadAll(tmp)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	file.Write(data)
+
+	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully.", uploadedFile.Filename))
 }
