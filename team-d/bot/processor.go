@@ -1,10 +1,10 @@
 package bot
 
 import (
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/model"
 	"regexp"
 	"net/url"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/env"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/env"
 	"fmt"
 	"strings"
 )
@@ -104,7 +104,7 @@ func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 
 // Process ...
 
-
+/*
 func (p *KatoProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	 r := regexp.MustCompile("\\AKato (.*)\\z")
 	 matchedStrings := r.FindStringSubmatch(msgIn.Body)
@@ -133,4 +133,16 @@ func (p *KatoProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 		 return &model.Message{
 		 Body: res.Results[0].Reply,
 				 }, nil
+	}*/
+
+func (p *KatoProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	fortunes := []string{
+		"botの返事",
 	}
+	result := fortunes[randIntn(len(fortunes))]
+
+	return &model.Message{
+		Body: result,
+		Username: "bot",
+	}, nil
+}

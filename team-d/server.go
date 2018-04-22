@@ -8,10 +8,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/bot"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/controller"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/db"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/bot"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/controller"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/db"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -87,6 +87,8 @@ func (s *Server) Init(dbconf, env string) error {
 	s.bots = append(s.bots, keywordBot)
 	gachaBot := bot.NewGachaBot(s.poster.In)
 	s.bots = append(s.bots, gachaBot)
+	katoBot := bot.NewKatoBot(s.poster.In)
+	s.bots = append(s.bots, katoBot)
 	return nil
 }
 

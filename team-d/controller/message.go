@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/httputil"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/httputil"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/model"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

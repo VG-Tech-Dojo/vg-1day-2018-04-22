@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-d/model"
 )
 
 type (
@@ -116,7 +116,7 @@ func NewGachaBot(out chan *model.Message) *Bot {
 
 		}
 
-func KatoBot(out chan *model.Message) *Bot {
+func NewKatoBot(out chan *model.Message) *Bot {
 
 	in := make(chan *model.Message)
 	checker := NewRegexpChecker("\\Akato\\z")
