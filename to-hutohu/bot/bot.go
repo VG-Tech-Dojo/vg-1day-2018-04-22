@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/model"
@@ -111,6 +112,24 @@ func NewGachaBot(out chan *model.Message) *Bot {
 
 	return &Bot{
 		name:      "gachabot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
+// NewTalkBot は会話の返答を返す新しいBotの構造体のポインタを返します
+func NewTalkBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Atalk .*\\z")
+	fmt.Println("s")
+
+	processor := &TalkProcessor{}
+
+	return &Bot{
+		name:      "talkbot",
 		in:        in,
 		out:       out,
 		checker:   checker,

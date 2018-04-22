@@ -1,12 +1,15 @@
 package bot
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"math/rand"
 	"regexp"
 	"strings"
 
 	"fmt"
 
+	"net/http"
 	"net/url"
 
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/env"
@@ -34,6 +37,19 @@ type (
 
 	// GachaProcessor はガチャの結果を返すprocessorの構造体です
 	GachaProcessor struct{}
+
+	// TalkProcessor はなんか話してくれるprocerrorの構造体です
+	TalkProcessor struct{}
+
+	talkResponse struct {
+		Reply string `json:"reply"`
+	}
+
+	talkAPIresult struct {
+		Status  int            `json:"status"`
+		Message string         `json:"message"`
+		Results []talkResponse `json:"results"`
+	}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -84,11 +100,49 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error)
 	}, nil
 }
 
-// GachaProcessor はガチャの結果を返します
+// Process はガチャの結果を返します
 func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	result := []string{"SSレア", "Sレア", "レア", "ノーマル"}[rand.Intn(4)]
 	return &model.Message{
 		Username: "Gacha bot",
 		Body:     fmt.Sprintf("ガチャの結果は%sです！！", result),
+	}, nil
+}
+
+// Process は会話の返答を返します
+func (p *TalkProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	form := url.Values{}
+	form.Set("apikey", env.RecruitTalkAPIToken)
+	form.Set("query", text)
+	res, err := http.PostForm("https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk", form)
+	if err != nil {
+		return nil, err
+	}
+
+	respBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	resultData := &talkAPIresult{}
+	err = json.Unmarshal(respBody, resultData)
+	if err != nil {
+		fmt.Println("siiiiii")
+		return nil, err
+	}
+
+	reply := ""
+	if len(resultData.Results) == 0 {
+		reply = "返答はない"
+	} else {
+		reply = resultData.Results[0].Reply
+	}
+
+	return &model.Message{
+		Username: "Talk bot",
+		Body:     reply,
 	}, nil
 }
