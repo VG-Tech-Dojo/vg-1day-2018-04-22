@@ -6,8 +6,11 @@ import (
 
 	"fmt"
 
+	"encoding/json"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/yuta/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/yuta/model"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 )
 
@@ -31,6 +34,8 @@ type (
 	KeywordProcessor struct{}
 
 	GachaProcessor struct{}
+
+	ChatProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -91,5 +96,42 @@ func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	result := rare[randIntn(len(rare))]
 	return &model.Message{
 		Body: result,
+	}, nil
+}
+
+type TalkResponse struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Results []struct {
+		Perplexity float64 `json:"perplexity"`
+		Reply      string  `json:"reply"`
+	} `json:"results"`
+}
+
+func (p *ChatProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	values := url.Values{}
+	values.Add("apikey", env.ChatAPIAppID)
+	values.Add("query", text)
+
+	resp, err := http.PostForm("https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk", values)
+	if err != nil {
+		return nil, err
+	}
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	var talkResponse TalkResponse
+	err = json.Unmarshal(body, &talkResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Message{
+		Body: talkResponse.Results[0].Reply,
 	}, nil
 }
