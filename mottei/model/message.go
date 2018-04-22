@@ -90,4 +90,13 @@ func (m *Message) Update(db *sql.DB) (*Message, error) {
 // ...
 
 // 1-4. メッセージを削除しよう
+func (m *Message) Delete(db *sql.DB) error {
+	_, err := db.Exec(`DELETE FROM message WHERE id = ?`, m.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ...
