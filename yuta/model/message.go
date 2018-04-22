@@ -41,7 +41,7 @@ func MessagesAll(db *sql.DB) ([]*Message, error) {
 func MessageByID(db *sql.DB, id string) (*Message, error) {
 	m := &Message{}
 
-	if err := db.QueryRow(`select id, body, message from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.UserName); err != nil {
+	if err := db.QueryRow(`select id, body, username from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.UserName); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,26 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 }
 
 // 1-3. メッセージを編集しよう
-// ...
+func (m *Message) Update(db *sql.DB) (*Message, error) {
+	res, err := db.Exec(`update message set body = ? where id = ?`, m.Body, m.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	//if id != m.ID {
+	//	return nil, errors.New("id did not match")
+	//}
+
+	return &Message{
+		ID:       id,
+		Body:     m.Body,
+		UserName: m.UserName,
+	}, nil
+}
 
 // 1-4. メッセージを削除しよう
 // ...
