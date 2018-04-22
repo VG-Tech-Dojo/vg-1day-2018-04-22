@@ -25,7 +25,8 @@
         </div>
       </div>
       <div class="message-body" v-else>
-        <span>{{ body }} - {{ username }}</span>
+        <p>{{ username }}</p>
+        <span>{{ body }}</span>
         <span class="action-button u-pull-right" v-on:click="edit">&#9998;</span>
         <span class="action-button u-pull-right" v-on:click="remove">&#10007;</span>
       </div>
@@ -89,6 +90,7 @@
         axios.get('/api/messages')
         .then(res => {
           this.messages = res.data.result
+          this.messages.reverse()
         })
       }, 1000)
     },
@@ -96,6 +98,7 @@
       getMessages() {
         fetch('/api/messages').then(response => response.json()).then(data => {
           this.messages = data.result;
+          this.messages.reverse()
         });
       },
       keydown(e) {
@@ -159,7 +162,6 @@
       }
     },
     mounted() {
-      console.log(document.querySelector('html > body'))
     }
   });
 })();

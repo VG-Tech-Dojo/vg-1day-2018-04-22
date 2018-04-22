@@ -18,6 +18,11 @@
   bottom: 0;
   height: 200px;
   width: 70%;
+  display: block;
+}
+
+.input-container > textarea {
+  resize: none;
 }
 
 .message-list-footer {
@@ -26,4 +31,17 @@
 
 body {
   margin: 0px
+}
+
+.message {
+
+}
+
+.message:hover{
+  background-color: #eafbff;
+  border-radius: 5px;
+}
+
+.message > div > p {
+  font-weight: bold;
 }
