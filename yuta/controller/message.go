@@ -75,6 +75,9 @@ func (m *Message) Create(c *gin.Context) {
 
 	// 1-2. ユーザー名を追加しよう
 	// できる人は、ユーザー名が空だったら`anonymous`等適当なユーザー名で投稿するようにしてみよう
+	if msg.UserName == "" {
+		msg.UserName = "hogeeee"
+	}
 
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {
