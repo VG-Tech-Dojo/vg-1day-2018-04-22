@@ -42,7 +42,7 @@
         this.editedBody = null
       },
       doneEdit() {
-        this.updateMessage({id: this.id, body: this.editedBody})
+        this.updateMessage({id: this.id, username:this.username, body: this.editedBody})
           .then(response => {
             this.cancelEdit()
           })
