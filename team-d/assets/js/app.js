@@ -115,7 +115,8 @@
             const index = this.messages.findIndex(m => {
               return m.id === updatedMessage.id
             })
-            Vue.set(this.messages, index, updatedMessage)
+            // 1-3 Vue.set(this.messages, index, updatedMessage)
+            Vue.set(this.messages, index, response.result)
         })
       },
       clearMessage() {
