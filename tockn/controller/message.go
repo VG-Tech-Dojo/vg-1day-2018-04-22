@@ -128,17 +128,17 @@ func (m *Message) UpdateByID(c *gin.Context) {
 func (m *Message) DeleteByID(c *gin.Context) {
 	// 1-4. メッセージを削除しよう
 	var msg model.Message
-	ID, err1 := strconv.ParseInt(c.Param("id"), 10, 64)
+	ID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 
-	if err1 != nil {
-		resp := httputil.NewErrorResponse(err1)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
 
 	msg.ID = ID
 
-	_, err := msg.Delete(m.DB)
+	err = msg.Delete(m.DB)
 
 	if err != nil {
 		resp := httputil.NewErrorResponse(err)
