@@ -123,7 +123,24 @@ func (m *Message) UpdateByID(c *gin.Context) {
 
 // DeleteByID は...
 func (m *Message) DeleteByID(c *gin.Context) {
-	// 1-4. メッセージを削除しよう
-	// ...
+	msg, err := model.MessageByID(m.DB, c.Param("id"))
+
+	switch {
+	case err == sql.ErrNoRows:
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusNotFound, resp)
+		return
+	case err != nil:
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	if err := msg.Delete(m.DB); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{})
 }
