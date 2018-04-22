@@ -94,9 +94,31 @@ func (m *Message) Create(c *gin.Context) {
 
 // UpdateByID は...
 func (m *Message) UpdateByID(c *gin.Context) {
-	// 1-3. メッセージを編集しよう
-	// ...
-	c.JSON(http.StatusCreated, gin.H{})
+	var msg model.Message
+
+	if c.Request.ContentLength == 0 {
+		resp := httputil.NewErrorResponse(errors.New("body is missing"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	if err := c.BindJSON(&msg); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	err := msg.Update(m.DB)
+	switch {
+	case err == sql.ErrNoRows:
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusNotFound, resp)
+		return
+	case err != nil:
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
 }
 
 // DeleteByID は...

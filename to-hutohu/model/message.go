@@ -9,13 +9,11 @@ type Message struct {
 	ID       int64  `json:"id"`
 	Body     string `json:"body"`
 	Username string `json:"username"`
-	// 1-1. ユーザー名を表示しよう
 }
 
 // MessagesAll は全てのメッセージを返します
 func MessagesAll(db *sql.DB) ([]*Message, error) {
 
-	// 1-1. ユーザー名を表示しよう
 	rows, err := db.Query(`select id, username, body from message`)
 	if err != nil {
 		return nil, err
@@ -25,7 +23,6 @@ func MessagesAll(db *sql.DB) ([]*Message, error) {
 	var ms []*Message
 	for rows.Next() {
 		m := &Message{}
-		// 1-1. ユーザー名を表示しよう
 		if err := rows.Scan(&m.ID, &m.Username, &m.Body); err != nil {
 			return nil, err
 		}
@@ -42,7 +39,6 @@ func MessagesAll(db *sql.DB) ([]*Message, error) {
 func MessageByID(db *sql.DB, id string) (*Message, error) {
 	m := &Message{}
 
-	// 1-1. ユーザー名を表示しよう
 	if err := db.QueryRow(`select id, username, body from message where id = ?`, id).Scan(&m.ID, &m.Username, &m.Body); err != nil {
 		return nil, err
 	}
@@ -52,7 +48,6 @@ func MessageByID(db *sql.DB, id string) (*Message, error) {
 
 // Insert はmessageテーブルに新規データを1件追加します
 func (m *Message) Insert(db *sql.DB) (*Message, error) {
-	// 1-2. ユーザー名を追加しよう
 	res, err := db.Exec(`insert into message (username, body) values (?, ?)`, m.Username, m.Body)
 	if err != nil {
 		return nil, err
@@ -66,12 +61,21 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 		ID:       id,
 		Body:     m.Body,
 		Username: m.Username,
-		// 1-2. ユーザー名を追加しよう
 	}, nil
 }
 
-// 1-3. メッセージを編集しよう
-// ...
+// Update はmessageテーブルのデータを更新します
+func (m *Message) Update(db *sql.DB) error {
+	res, err := db.Exec(`update message set body = ? where id = ?`, m.Body, m.ID)
+	if err != nil {
+		return err
+	}
+	_, err = res.LastInsertId()
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 // 1-4. メッセージを削除しよう
 // ...
