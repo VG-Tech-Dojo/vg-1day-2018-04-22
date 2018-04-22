@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 )
 
 // Message はメッセージの構造体です
@@ -46,7 +47,7 @@ func MessageByID(db *sql.DB, id string) (*Message, error) {
 	m := &Message{}
 
 	// 1-1. ユーザー名を表示しよう
-	if err := db.QueryRow(`select id, body, username from message where id = ?`, id).Scan(&m.ID, &m.Body); err != nil {
+	if err := db.QueryRow(`select id, body, username from message where id = ?`, id).Scan(&m.ID, &m.Body,&m.Username); err != nil {
 		return nil, err
 	}
 
@@ -74,7 +75,20 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 }
 
 // 1-3. メッセージを編集しよう
-// ...
+func Update(db *sql.DB) (*Message, error) {
+	_, err := db.Exec(`UPDATE message SET body=?  WHERE id = ?`, m.Body, m.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	id := strconv.FormatInt(m.ID, 10)
+	msg, err := MessageByID(db, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return msg, nil
+}
 
 // 1-4. メッセージを削除しよう
 // ...
