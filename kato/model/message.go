@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"strconv"
 )
 
 // Message はメッセージの構造体です
@@ -72,6 +73,28 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 
 // 1-3. メッセージを編集しよう
 // ...
+func (m *Message) Update(db *sql.DB) (*Message, error) {
+		_, err := db.Exec(`UPDATE message SET body=?  WHERE id = ?`, m.Body, m.ID)
+		if err != nil {
+				return nil, err
+			}
+
+			id := strconv.FormatInt(m.ID, 10)
+		msg, err := MessageByID(db, id)
+		if err != nil {
+				return nil, err
+			}
+
+			return msg, nil
+	}
 
 // 1-4. メッセージを削除しよう
 // ...
+func (m *Message) Delete(db *sql.DB) error {
+		_, err := db.Exec(`DELETE FROM message WHERE id = ?`, m.ID)
+		if err != nil {
+				return err
+			}
+
+			return nil
+	}

@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kato/model"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
+
 
 // Message is controller for requests to messages
 type Message struct {
@@ -95,18 +96,70 @@ func (m *Message) Create(c *gin.Context) {
 		"result": inserted,
 		"error":  nil,
 	})
+
+
 }
 
 // UpdateByID は...
 func (m *Message) UpdateByID(c *gin.Context) {
 	// 1-3. メッセージを編集しよう
 	// ...
-	c.JSON(http.StatusCreated, gin.H{})
+	//c.JSON(http.StatusCreated, gin.H{})
+	var msg model.Message
+
+			if err := c.BindJSON(&msg); err != nil {
+				resp := httputil.NewErrorResponse(err)
+				c.JSON(http.StatusInternalServerError, resp)
+				return
+			}
+
+			i := c.Param("id")
+		id, err := strconv.ParseInt(i, 10, 64)
+		if err != nil {
+				resp := httputil.NewErrorResponse(err)
+				c.JSON(http.StatusBadRequest, resp)
+				return
+			}
+
+			msg.ID = id
+		updated, err := msg.Update(m.DB)
+		if err != nil {
+				resp := httputil.NewErrorResponse(err)
+				c.JSON(http.StatusInternalServerError, resp)
+				return
+			}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": updated,
+		"error":  nil,
+	})
 }
 
 // DeleteByID は...
 func (m *Message) DeleteByID(c *gin.Context) {
 	// 1-4. メッセージを削除しよう
 	// ...
-	c.JSON(http.StatusOK, gin.H{})
+	//c.JSON(http.StatusOK, gin.H{})
+	var msg model.Message
+
+			i := c.Param("id")
+		id, err := strconv.ParseInt(i, 10, 64)
+		if err != nil {
+				resp := httputil.NewErrorResponse(err)
+				c.JSON(http.StatusBadRequest, resp)
+				return
+			}
+
+			msg.ID = id
+		err = msg.Delete(m.DB)
+		if err != nil {
+				resp := httputil.NewErrorResponse(err)
+				c.JSON(http.StatusInternalServerError, resp)
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+					"result": nil,
+					"error":  nil,
+							   	})
 }
