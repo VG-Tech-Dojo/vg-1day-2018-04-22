@@ -29,12 +29,16 @@ type (
 
 	// KeywordProcessor はメッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
-)
 
-// Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
+	// GachaProcessor m2-1で追加するやつ
+	GachaProcessor struct{}
+	)
+
+	// Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	return &model.Message{
 		Body: msgIn.Body + ", world!",
+		Username: "bot",
 	}, nil
 }
 
@@ -51,6 +55,7 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) (*model.Message, error)
 	result := fortunes[randIntn(len(fortunes))]
 	return &model.Message{
 		Body: result,
+		Username: "bot",
 	}, nil
 }
 
@@ -78,3 +83,18 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error)
 		Body: "キーワード：" + strings.Join(keywords, ", "),
 	}, nil
 }
+// Process ...
+func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+		fortunes := []string{
+				"SSレア",
+				"Sレア",
+				"レア",
+				"ノーマル",
+			}
+		result := fortunes[randIntn(len(fortunes))]
+
+			return &model.Message{
+				Body: result,
+				Username: "bot",
+			}, nil
+	}
