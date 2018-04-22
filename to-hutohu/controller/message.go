@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/bot"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/model"
 	"github.com/gin-gonic/gin"
@@ -143,32 +144,39 @@ func (m *Message) DeleteByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
-func (m *Message) SaveImage(c *gin.Context) {
-	uploadedFile, err := c.FormFile("file")
-	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
-		return
-	}
+func (m *Message) SaveImage(in chan *model.Message) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		uploadedFile, err := c.FormFile("file")
+		if err != nil {
+			c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+			return
+		}
 
-	file, err := os.Create(`./assets/imgs/` + uploadedFile.Filename)
-	if err != nil {
-		c.Error(err)
-		return
-	}
-	defer file.Close()
+		file, err := os.Create(`./assets/imgs/` + uploadedFile.Filename)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		defer file.Close()
 
-	tmp, err := uploadedFile.Open()
-	if err != nil {
-		c.Error(err)
-		return
-	}
+		tmp, err := uploadedFile.Open()
+		if err != nil {
+			c.Error(err)
+			return
+		}
 
-	data, err := ioutil.ReadAll(tmp)
-	if err != nil {
-		c.Error(err)
-		return
-	}
-	file.Write(data)
+		data, err := ioutil.ReadAll(tmp)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		file.Write(data)
 
-	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully.", uploadedFile.Filename))
+		mes, err := bot.Tag(`./assets/imgs/` + uploadedFile.Filename)
+		if err != nil {
+			c.Error(err)
+		}
+		in <- mes
+		c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully.", uploadedFile.Filename))
+	}
 }

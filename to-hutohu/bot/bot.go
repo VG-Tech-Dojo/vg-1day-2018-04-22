@@ -120,13 +120,13 @@ func NewGachaBot(out chan *model.Message) *Bot {
 }
 
 // NewTalkBot は会話の返答を返す新しいBotの構造体のポインタを返します
-func NewTalkBot(out chan *model.Message) *Bot {
+func NewChatBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
 
 	checker := NewRegexpChecker("\\Atalk .*\\z")
 	fmt.Println("s")
 
-	processor := &TalkProcessor{}
+	processor := &ChatProcessor{}
 
 	return &Bot{
 		name:      "talkbot",

@@ -71,7 +71,6 @@ func (s *Server) Init(dbconf, env string) error {
 	api.POST("/messages", mctr.Create)
 	api.PUT("/messages/:id", mctr.UpdateByID)
 	api.DELETE("/messages/:id", mctr.DeleteByID)
-	api.POST("/image", mctr.SaveImage)
 
 	// bot
 	mc := bot.NewMulticaster(msgStream)
@@ -79,6 +78,8 @@ func (s *Server) Init(dbconf, env string) error {
 
 	poster := bot.NewPoster(10)
 	s.poster = poster
+
+	api.POST("/image", mctr.SaveImage(s.poster.In))
 
 	helloWorldBot := bot.NewHelloWorldBot(s.poster.In)
 	s.bots = append(s.bots, helloWorldBot)
@@ -88,8 +89,6 @@ func (s *Server) Init(dbconf, env string) error {
 	s.bots = append(s.bots, keywordBot)
 	gachaBot := bot.NewGachaBot(s.poster.In)
 	s.bots = append(s.bots, gachaBot)
-	talkBot := bot.NewTalkBot(s.poster.In)
-	s.bots = append(s.bots, talkBot)
 
 	return nil
 }
