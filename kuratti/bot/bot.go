@@ -116,3 +116,16 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 		processor: processor,
 	}
 }
+
+func NewChatBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	processor := &KeywordProcessor{}
+
+	return &Bot{
+		name:      "chatbot",
+		in:        in,
+		out:       out,
+		processor: processor,
+	}
+}

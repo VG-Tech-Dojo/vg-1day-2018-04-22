@@ -87,7 +87,9 @@ s.Engine.GET("/kuratti", func(c *gin.Context) {
 	keywordBot := bot.NewKeywordBot(s.poster.In)
 	s.bots = append(s.bots, keywordBot)
 	gachaBot := bot.NewgachaBot(s.poster.In)
-	s.bots = append(s.bots, omikujiBot)
+	s.bots = append(s.bots, gachaBot)
+	chatBot := bot.NewChatBot(s.poster.In)
+	s.bots = append(s.bots, chatBot)
 
 
 	return nil

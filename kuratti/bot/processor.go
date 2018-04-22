@@ -94,3 +94,5 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error)
 		Body: "キーワード：" + strings.Join(keywords, ", "),
 	}, nil
 }
+
+

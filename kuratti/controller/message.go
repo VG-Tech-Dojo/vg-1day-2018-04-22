@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/httputil"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kuratti/httputil"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/kuratti/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -76,12 +76,6 @@ func (m *Message) Create(c *gin.Context) {
 
 	// 1-2. ユーザー名を追加しよう
 	// できる人は、ユーザー名が空だったら`anonymous`等適当なユーザー名で投稿するようにしてみよう
-	if msg.Body == "" || msg.UserName == "" {
-		resp := httputil.NewErrorResponse(errors.New("Message Body or UserName is empty"))
-		c.JSON(http.StatusBadRequest, resp)
-		return
-	}
-
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {
 		resp := httputil.NewErrorResponse(err)
