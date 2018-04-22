@@ -96,6 +96,19 @@ func (m *Message) Create(c *gin.Context) {
 func (m *Message) UpdateByID(c *gin.Context) {
 	// 1-3. メッセージを編集しよう
 	// ...
+
+	var msg model.Message
+	if err := c.BindJSON(&msg); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	_, err := msg.Update(m.DB)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
 	c.JSON(http.StatusCreated, gin.H{})
 }
 
