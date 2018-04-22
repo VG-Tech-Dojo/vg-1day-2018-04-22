@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/model"
@@ -123,7 +124,18 @@ func (m *Message) UpdateByID(c *gin.Context) {
 
 // DeleteByID は...
 func (m *Message) DeleteByID(c *gin.Context) {
-	// 1-4. メッセージを削除しよう
-	// ...
+	messageID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+	msg := &model.Message{
+		ID: messageID,
+	}
+	if err := msg.Delete(m.DB); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+	}
 	c.JSON(http.StatusOK, gin.H{})
 }
