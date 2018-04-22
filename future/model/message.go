@@ -2,12 +2,14 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 // Message はメッセージの構造体です
 type Message struct {
 	ID   int64  `json:"id"`
 	Body string `json:"body"`
+	Username string `json:"username"`
 	// 1-1. ユーザー名を表示しよう
 }
 
@@ -15,8 +17,9 @@ type Message struct {
 func MessagesAll(db *sql.DB) ([]*Message, error) {
 
 	// 1-1. ユーザー名を表示しよう
-	rows, err := db.Query(`select id, body from message`)
+	rows, err := db.Query(`select id, body, username from message`)
 	if err != nil {
+		fmt.Printf("%v\n", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -25,10 +28,11 @@ func MessagesAll(db *sql.DB) ([]*Message, error) {
 	for rows.Next() {
 		m := &Message{}
 		// 1-1. ユーザー名を表示しよう
-		if err := rows.Scan(&m.ID, &m.Body); err != nil {
+		if err := rows.Scan(&m.ID, &m.Body, &m.Username); err != nil {
 			return nil, err
 		}
 		ms = append(ms, m)
+		fmt.Printf("%v\n", m)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
