@@ -12,6 +12,7 @@
       return {
         editing: false,
         editedBody: null,
+        editedUsername: null,
       }
     },
     // 1-1. ユーザー名を表示しよう
@@ -19,6 +20,7 @@
     <div class="message">
       <div v-if="editing">
         <div class="row">
+          <inpu v-model="editedUsername" />
           <textarea v-model="editedBody" class="u-full-width"></textarea>
           <button v-on:click="doneEdit">Save</button>
           <button v-on:click="cancelEdit">Cancel</button>
@@ -44,7 +46,7 @@
         this.editedBody = null
       },
       doneEdit() {
-        this.updateMessage({id: this.id, body: this.editedBody})
+        this.updateMessage({id: this.id, body: this.editedBody, username: this.editedUsername})
           .then(response => {
             this.cancelEdit()
           })
@@ -71,7 +73,8 @@
         const message = this.newMessage;
         fetch('/api/messages', {
           method: 'POST',
-          body: JSON.stringify(message)
+          body: JSON.stringify(message),
+          username: JSON.stringify(message)
         })
           .then(response => response.json())
           .then(response => {
