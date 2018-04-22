@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="message-body" v-else>
-        <span>{{ username }}</span>
+        <span>{{ username }} - <br></span>
         <span>{{ body }}</span>
         <span class="action-button u-pull-right" v-on:click="edit">&#9998;</span>
         <span class="action-button u-pull-right" v-on:click="remove">&#10007;</span>
