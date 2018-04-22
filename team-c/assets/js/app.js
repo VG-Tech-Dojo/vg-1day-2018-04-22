@@ -3,11 +3,12 @@
   const Message = function() {
     this.body = ''
     this.username = ''
+    this.update_timestamp = ''
   };
 
   Vue.component('message', {
     // 1-1. ユーザー名を表示しよう
-    props: ['id', 'body', 'username', 'removeMessage', 'updateMessage'],
+    props: ['id', 'body', 'username', 'timestamp', 'removeMessage', 'updateMessage'],
     data() {
       return {
         editing: false,
@@ -25,7 +26,7 @@
         </div>
       </div>
       <div class="message-body" v-else>
-        <span>{{ body }} - {{ username }}</span>
+        <span>{{ body }} - {{ username }} - {{ timestamp }}</span>
         <span class="action-button u-pull-right" v-on:click="edit">&#9998;</span>
         <span class="action-button u-pull-right" v-on:click="remove">&#10007;</span>
       </div>
@@ -65,6 +66,7 @@
       getMessages() {
         fetch('/api/messages').then(response => response.json()).then(data => {
           this.messages = data.result;
+          console.log(data.result);
         });
       },
       sendMessage() {
