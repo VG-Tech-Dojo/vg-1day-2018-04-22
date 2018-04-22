@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-c/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/model"
 )
 
 type (
@@ -94,6 +94,36 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 
 	return &Bot{
 		name:      "keywordbot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
+// NewGachaBot m2-1でつくるやつです
+func NewGachaBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+	checker := NewRegexpChecker("\\Agacha\\z")
+	processor := &GachaProcessor{}
+
+	return &Bot{
+		name:      "gachabot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
+// NewTalkBot m2-2でつくるやつです
+func NewTalkBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+	checker := NewRegexpChecker("\\Atalk .*")
+	processor := &TalkProcessor{}
+
+	return &Bot{
+		name:      "talkbot",
 		in:        in,
 		out:       out,
 		checker:   checker,

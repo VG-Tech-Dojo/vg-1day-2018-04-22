@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"strconv"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-c/httputil"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/team-c/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/httputil"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/original/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -75,6 +76,11 @@ func (m *Message) Create(c *gin.Context) {
 
 	// 1-2. ユーザー名を追加しよう
 	// できる人は、ユーザー名が空だったら`anonymous`等適当なユーザー名で投稿するようにしてみよう
+	if msg.Body == "" || msg.UserName == "" {
+		resp := httputil.NewErrorResponse(errors.New("Message Body or UserName is empty"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
 
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {
@@ -96,12 +102,60 @@ func (m *Message) Create(c *gin.Context) {
 func (m *Message) UpdateByID(c *gin.Context) {
 	// 1-3. メッセージを編集しよう
 	// ...
-	c.JSON(http.StatusCreated, gin.H{})
+	var msg model.Message
+
+	if err := c.BindJSON(&msg); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	i := c.Param("id")
+	id, err := strconv.ParseInt(i, 10, 64)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	msg.ID = id
+	updated, err := msg.Update(m.DB)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": updated,
+		"error":  nil,
+	})
 }
 
 // DeleteByID は...
 func (m *Message) DeleteByID(c *gin.Context) {
 	// 1-4. メッセージを削除しよう
 	// ...
-	c.JSON(http.StatusOK, gin.H{})
+	var msg model.Message
+
+	i := c.Param("id")
+	id, err := strconv.ParseInt(i, 10, 64)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	msg.ID = id
+	err = msg.Delete(m.DB)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": nil,
+		"error":  nil,
+	})
 }
