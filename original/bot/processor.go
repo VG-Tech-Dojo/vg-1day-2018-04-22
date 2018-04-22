@@ -38,6 +38,7 @@ type (
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	return &model.Message{
 		Body: msgIn.Body + ", world!",
+		UserName: "bot",
 	}, nil
 }
 
@@ -54,6 +55,7 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) (*model.Message, error)
 	result := fortunes[randIntn(len(fortunes))]
 	return &model.Message{
 		Body: result,
+		UserName: "bot",
 	}, nil
 }
 
@@ -94,5 +96,6 @@ func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 
 	return &model.Message{
 		Body: result,
+		UserName: "bot",
 	}, nil
 }
