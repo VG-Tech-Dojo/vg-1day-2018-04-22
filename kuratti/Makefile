@@ -66,6 +66,7 @@ curl_messages_get:
 	curl -i $(HOST)/api/messages/$(ID)
 
 BODY :=
+USERNAME :=
 curl_message_post:
 	curl -i -X POST $(HOST)/api/messages -d '{"BODY": "$(BODY)"}'
 
