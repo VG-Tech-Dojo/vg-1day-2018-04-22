@@ -48,9 +48,13 @@ func (s *Server) Init(dbconf, env string) error {
 	// routing
 	s.Engine.LoadHTMLGlob("./templates/*")
 
+	s.Engine.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 	s.Engine.GET("/fujii", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
+
 	s.Engine.Static("/assets", "./assets")
 
 	// tutorial. 自己紹介を追加する
