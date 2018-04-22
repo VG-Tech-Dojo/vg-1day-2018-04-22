@@ -8,7 +8,7 @@ import (
 type Message struct {
 	ID   int64  `json:"id"`
 	Body string `json:"body"`
-  Username string `json:"username"`
+	Username string `json:"username"`
 }
 
 // MessagesAll は全てのメッセージを返します
@@ -39,7 +39,7 @@ func MessagesAll(db *sql.DB) ([]*Message, error) {
 func MessageByID(db *sql.DB, id string) (*Message, error) {
 	m := &Message{}
 
-	if err := db.QueryRow(`select id, body, username from message where id = ?`, id).Scan(&m.ID, &m.Body); err != nil {
+	if err := db.QueryRow(`select id, body, username from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.Username); err != nil {
 		return nil, err
 	}
 
