@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	"encoding/json"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/yuta/env"
-	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/yuta/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/env"
+	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/to-hutohu/model"
 	"io/ioutil"
 	"net/http"
 	"net/url"
