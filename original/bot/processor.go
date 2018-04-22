@@ -85,6 +85,7 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error)
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+		UserName: "bot",
 	}, nil
 }
 
@@ -132,5 +133,6 @@ func (p *TalkProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 
 	return &model.Message{
 		Body: res.Results[0].Reply,
+		UserName: "bot",
 	}, nil
 }
