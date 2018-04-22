@@ -6,8 +6,8 @@ import (
 
 // Message はメッセージの構造体です
 type Message struct {
-	ID   int64  `json:"id"`
-	Body string `json:"body"`
+	ID       int64  `json:"id"`
+	Body     string `json:"body"`
 	Username string `json:"username"`
 }
 
@@ -59,8 +59,8 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 	}
 
 	return &Message{
-		ID:   id,
-		Body: m.Body,
+		ID:       id,
+		Body:     m.Body,
 		Username: m.Username,
 	}, nil
 }
