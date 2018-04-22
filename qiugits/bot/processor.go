@@ -27,6 +27,9 @@ type (
 	// OmikujiProcessor は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかをランダムで作るprocessorの構造体です
 	OmikujiProcessor struct{}
 
+  // GachaProcessor
+  GachaProcessor struct{}
+
 	// KeywordProcessor はメッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
 )
@@ -53,6 +56,21 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) (*model.Message, error)
 		Body: result,
 	}, nil
 }
+
+// ProcessはSSレア, Sレア, レア, ノーマルのいずれかを返す
+func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+  routes := []string{
+    "SSレア",
+    "Sレア",
+    "レア",
+    "ノーマル",
+  }
+  result := routes[randIntn(len(routes))]
+  return &model.Message{
+    Body: result,
+  }, nil
+}
+
 
 // Process はメッセージ本文からキーワードを抽出します
 func (p *KeywordProcessor) Process(msgIn *model.Message) (*model.Message, error) {
