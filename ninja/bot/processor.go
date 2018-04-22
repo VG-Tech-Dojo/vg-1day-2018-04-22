@@ -6,13 +6,17 @@ import (
 
 	"fmt"
 
+	"encoding/json"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/ninja/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2018-04-22/ninja/model"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 )
 
 const (
 	keywordAPIURLFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	talkAPIURLFormat    = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk"
 )
 
 type (
@@ -32,6 +36,9 @@ type (
 
 	// GachaProcessor は"SSレア", "Sレア", "レア", "ノーマル"のいずれかをランダムで作るprocessorの構造体です
 	GachaProcessor struct{}
+
+	// TalkProcessor はメッセージに対する返信を返すprocessorの構造体です
+	TalkProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -93,5 +100,37 @@ func (p *GachaProcessor) Process(msgIn *model.Message) (*model.Message, error) {
 	result := rarelity[randIntn(len(rarelity))]
 	return &model.Message{
 		Body: result,
+	}, nil
+}
+
+// Process はメッセージ本文に対する返信を返します
+func (p *TalkProcessor) Process(msgIn *model.Message) (*model.Message, error) {
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	values := url.Values{}
+	values.Add("apikey", env.TalkAPIKey)
+	values.Add("query", text)
+
+	res, err := http.PostForm(
+		talkAPIURLFormat,
+		values,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+
+	var decoded interface{}
+	if err := json.Unmarshal(body, &decoded); err != nil {
+		return nil, err
+	}
+
+	return &model.Message{
+		Body: decoded.(map[string]interface{})["results"].([]interface{})[0].(map[string]interface{})["reply"].(string),
 	}, nil
 }
