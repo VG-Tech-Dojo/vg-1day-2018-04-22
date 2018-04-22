@@ -58,6 +58,7 @@
     },
     created() {
       this.getMessages();
+      setInterval(this.getMessages, 500)
     },
     methods: {
       getMessages() {
