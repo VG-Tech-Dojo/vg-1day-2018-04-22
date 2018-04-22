@@ -6,9 +6,8 @@ import (
 
 // Message はメッセージの構造体です
 type Message struct {
-	ID   int64  `json:"id"`
-	Body string `json:"body"`
-	// 1-1. ユーザー名を表示しよう
+	ID       int64  `json:"id"`
+	Body     string `json:"body"`
 	UserName string `json:"username"`
 }
 
@@ -42,7 +41,6 @@ func MessagesAll(db *sql.DB) ([]*Message, error) {
 func MessageByID(db *sql.DB, id string) (*Message, error) {
 	m := &Message{}
 
-	// 1-1. ユーザー名を表示しよう
 	if err := db.QueryRow(`select id, body, message from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.UserName); err != nil {
 		return nil, err
 	}
