@@ -71,6 +71,7 @@ func (s *Server) Init(dbconf, env string) error {
 	api.POST("/messages", mctr.Create)
 	api.PUT("/messages/:id", mctr.UpdateByID)
 	api.DELETE("/messages/:id", mctr.DeleteByID)
+	api.POST("/image", mctr.SaveImage)
 
 	// bot
 	mc := bot.NewMulticaster(msgStream)

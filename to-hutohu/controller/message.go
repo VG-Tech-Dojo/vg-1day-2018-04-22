@@ -3,6 +3,7 @@ package controller
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -138,4 +139,20 @@ func (m *Message) DeleteByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 	}
 	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (m *Message) SaveImage(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		return
+	}
+
+	filename := "./assets/imgs/" + file.Filename
+	if err := c.SaveUploadedFile(file, filename); err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		return
+	}
+
+	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully.", file.Filename))
 }
